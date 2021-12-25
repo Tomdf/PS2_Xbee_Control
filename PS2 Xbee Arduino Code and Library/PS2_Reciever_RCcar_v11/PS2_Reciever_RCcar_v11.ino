@@ -1,6 +1,7 @@
 // This program is intended as a simple test that data is being properly recieved from the controller.
 // Data is recieved as a 6 byte packet. Bytes 3 & 5 are read and used to drive a 2 servo tank robot.
 // by Adam Kemp, 2012 http://code.google.com/p/smduino/
+// modified by Tomdf for RC car control v11
 
 byte buttons = 0; //button byte
 byte dPads = 0; //dpads byte
@@ -32,13 +33,8 @@ void setup() {
 
 void loop() {
   if (Serial1.available() >=7) { //waits until the 7 bytes are read into buffer
-    Serial.println("Reading First Byte...");
     startByte = Serial1.read();
-    Serial.print("starByte = ");
-    Serial.println(startByte);
     if (startByte == (255)){
-      Serial.print("StartByte Verified as ");
-      Serial.println(startByte);
       buttons = Serial1.read(); //reads byte 1
       dPads = Serial1.read(); //reads byte 2
       LY = Serial1.read(); //reads byte 3
@@ -46,17 +42,22 @@ void loop() {
       RY = Serial1.read(); //reads byte 5
       RX = Serial1.read(); //reads byte 6
     }
-    
+
+    // if left stick is pushed forward pass the deadzone turn on left
+    // motor at a forward speed relative to how far the stick is pushed
     if (LY <= 115){
       leftMotorSpeedF = map(LY, 0, 115, 255, 0); //converts the thumbstick value to 0 - 255 for PWM
       analogWrite (leftMotorReverse, 0);
       analogWrite (leftMotorForward, leftMotorSpeedF);
     }
+    // if the left stick is pushed back pass the deadzone turn on left
+    // motor at a reverse speed relative to how far the stick is pushed
     else if (LY >= 155){
       leftMotorSpeedR = map(LY, 155, 254, 0, 255);
       analogWrite (leftMotorForward, 0);
       analogWrite (leftMotorReverse, leftMotorSpeedR);
     }
+    // if the left stick is not pushed at all then turn off the left motor
     else {
       analogWrite (leftMotorForward,0);
       analogWrite (leftMotorReverse,0);
@@ -76,22 +77,6 @@ void loop() {
       analogWrite (rightMotorForward,0);
       analogWrite (rightMotorReverse,0);
     }
- /*   
-    Serial.print("buttons = ");
-    Serial.println(buttons);
-    Serial.print("dPads = ");
-    Serial.println(dPads);
-    Serial.print("LY = ");
-    Serial.println(LY);
-    Serial.print("LX = ");
-    Serial.println(LX);
-    Serial.print("RY = ");
-    Serial.println(RY);
-    Serial.print("RX = ");
-    Serial.println(RX);
-    Serial.println();
- */
     delay(15);
   }
 }
-
