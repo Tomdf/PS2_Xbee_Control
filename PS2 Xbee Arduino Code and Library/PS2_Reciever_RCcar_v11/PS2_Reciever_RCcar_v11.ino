@@ -1,5 +1,5 @@
-// This program is intended as a simple test that data is being properly recieved from the controller.
-// Data is recieved as a 6 byte packet. Bytes 3 & 5 are read and used to drive a 2 servo tank robot.
+// This program is intended as a simple test that data is being properly received from the controller.
+// Data is received as a 6 byte packet. Bytes 3 & 5 are read and used to drive a 2 servo tank robot.
 // by Adam Kemp, 2012 http://code.google.com/p/smduino/
 // modified by Tomdf for RC car control v11
 
